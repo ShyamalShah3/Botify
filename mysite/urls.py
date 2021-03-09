@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 from . import views
 urlpatterns = [
-    path('', views.index, name='index'),    
+    path('', views.index, name='index'),  
+    path('chat/', views.chat, name='chat'), 
+    # url(r'^chat/', views.regist_url), 
+    url(r'^regist_url/', views.regist_url),
+    url(r'^getResponse/', views.getResponse),  
 ]
