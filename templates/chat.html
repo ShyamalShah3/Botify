@@ -28,7 +28,7 @@
 
         }
         function refreshWastonMessages(message) {
-
+          message = message.replaceAll('\n', "<br/>");
             $(".media-list").append('<li class="media"><div class="media-body"><div class="media"><div class="media-body">'
 
                 + message + '<br/><small class="text-muted">'  + 'From: Waston Assistant' + '</small><hr/></div></div></div></li>');
@@ -77,7 +77,8 @@
                 $container[0].scrollTop = $container[0].scrollHeight;
 
                 var message = $("#messageText").val();
-
+                message = message.replaceAll('>', "〉");
+                message =message.replaceAll('<', "〈");
 
                 $.ajax({
                 url:  '/regist_url/',
@@ -87,8 +88,7 @@
                 }),
                 dataType:"json",
                 success: function (data) {
-                    message = message.replaceAll('>', "〉");
-                   message =message.replaceAll('<', "〈");
+                    
                  
                     refreshUserMessages(message);
                 }
@@ -167,10 +167,8 @@
                     <ul class="media-list">
                       <li class="media"><div class="media-body"><div class="media"><div class="media-body"> 
                         "Hello There! Welcome to Botify music recommendations! I am Botify. What can I do for you today?<br/>
-                        1. Recommend Today's Top Hits<br/>
-                        2. Give me a personal Recomendation<br/>
-                        3. Recommend Anything<br/>
-                         4. Learn more about Botify"<br/><small class="text-muted">From: Waston Assistant</small><hr/></div></div></div></li>
+                        Please tell me your name！<br/>
+                        <small class="text-muted">From: Waston Assistant</small><hr/></div></div></div></li>
                     </ul>
 
                 </div>

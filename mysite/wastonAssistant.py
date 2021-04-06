@@ -19,7 +19,7 @@ def createSession():
   ).get_result()
   return response
 
-def sendMessage(msg, session):
+def sendMessage(msg, session, userName):
   authenticator = IAMAuthenticator('Z5EqkvIKkkuVq6fLrQGu2RBkoeA3bbwtN95RXoSSlHGm')
   assistant = AssistantV2(
       version='2020-09-24',
@@ -38,23 +38,32 @@ def sendMessage(msg, session):
   print(msg)
   print(json.dumps(response))
   print(json.dumps(response['output']['generic']))
-  if len(response['output']['generic']) == 0:
-
-    return "Sorry, I don't understand"
-  elif len(response['output']['intents']) == 0:
-    responseString = str(json.dumps(response['output']['generic'][0]['text'], indent=2))
-    responseString = responseString.replace("\\n", '<br>', 10)
-    processResponse.storeInput(msg, responseString)
-    responseString = processResponse.processPersonal(responseString)
-    return responseString
-  else:
-    responseString = str(json.dumps(response['output']['generic'][0]['text'], indent=2))
-    responseString = responseString.replace("\\n", '<br>', 10)
-    print(response)
-    print("intent: "+ response['output']['intents'][0]['intent'])
-    intent = response['output']['intents'][0]['intent']
-    if  intent == 'Anything' or intent == 'Random' or intent == 'top_hit':
-      responseString = processResponse.processRandom(responseString)
+  responseString = responseMsg(msg, response, userName)
   
   return responseString
 
+def responseMsg(msg, response, userName):
+    if len(response['output']['generic']) == 0:#wrong input msg
+
+      return "Sorry, I don't understand"
+    elif len(response['output']['intents']) == 0:# record user preference
+      responseString = str(json.dumps(response['output']['generic'][0]['text'], indent=2))
+      responseString = responseString.replace("\\n", '<br>', 10)
+      processResponse.storeInput(msg, responseString, userName)
+      responseString = processResponse.processPersonal(responseString, userName)
+      return responseString
+    else:
+      responseString = str(json.dumps(response['output']['generic'][0]['text'], indent=2))
+      responseString = responseString.replace("\\n", '<br>', 10)
+      print(response)
+      print("intent: "+ response['output']['intents'][0]['intent'])
+      intent = response['output']['intents'][0]['intent']
+      if  intent == 'Anything' or intent == 'Random':
+        responseString = processResponse.processRandom(responseString)
+      elif intent == 'Favorite_Genres':
+        responseString = processResponse.processFavoriteGenre(responseString);
+      elif intent == 'Favorite_Artists':
+        responseString = processResponse.processFavoriteArtists(responseString);
+      elif  intent == 'top_hit':
+        responseString = processResponse.processTopHit(responseString);
+    return responseString

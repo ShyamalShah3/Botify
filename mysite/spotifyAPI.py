@@ -16,21 +16,49 @@ def randomMusic():
   tracks = recommendations['tracks']
   link = tracks[0]["album"]['id']
   return link
-  # i = 1
-  # for track in tracks:
-  #   print(str(i) +". Name: "+ track['name'] + "\tArtist: " + track['artists'][0]['name'])
-  #   print("Link: " + track['external_urls']['spotify']+ "\n");
-  
-  #   i+=1
+
 def personalRecom(genres, artists, tracks):
   sp = spotipy.Spotify(client_credentials_manager= SpotifyClientCredentials ("5f75bd64fe6742598b2d4650d401e9fe", "bf777b8578dd4f55b25b31f768eec9c2"))
-  
-  inputG = [genres]
-  searchA = sp.search(q = artists, limit = 1)
-  inputa = searchA["tracks"]["items"][0]["artists"][0]["id"]
-  recommendations = sp.recommendations(seed_genres = inputG, limit = 10)
+  # genres = genres.strip('\n')
+  # artists = artists.strip('\n')
+  # tracks = tracks.strip('\n')
+  inputG = list(genres.split(",")) 
+  listArtists = list(artists.split(",")) 
+  listTracks = list(tracks.split(","))
+  inputA = []
+  inputT = []
+  try:
+    for i in range(len(listArtists)):
+      searchA = sp.search(q = listArtists[i], limit = 1)
+      inputA.append(searchA["tracks"]["items"][0]["artists"][0]["id"])
+  except:
+    return "wrong artist"
+  try:
+    for j in range(len(listTracks)):
+      searchA = sp.search(q = listTracks[j], limit = 1)
+      inputT.append(searchA["tracks"]["items"][0]["id"])
+  except:
+    return "wrong track"
+  none = 0
+  if genres == "none":
+    inputG = None
+    none +=1
+  if artists == "none":
+    inputA = None
+    none +=1
+  if tracks == "none":
+    inputT = None
+    none +=1
+  if none ==3 :
+    return "none"
+#, seed_genres = inputG
+  recommendations = sp.recommendations(seed_artists = inputA ,seed_genres = inputG, seed_tracks=inputT, limit = 10)
   print(recommendations)
+  #print(recommendations)
   tracks = recommendations['tracks']
-  print("tt" + str(tracks))
-  link = tracks[0]["album"]['id']
-  return link
+  #print("tt" + str(tracks))
+  #link = tracks[0]["album"]['id']
+  links = []
+  for i in range(9):
+    links.append(tracks[i]["album"]['id'])
+  return links
