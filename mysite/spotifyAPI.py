@@ -15,7 +15,21 @@ def randomMusic():
   recommendations = sp.recommendations(seed_genres = ge, limit = 10)
   tracks = recommendations['tracks']
   link = tracks[0]["album"]['id']
-  return link
+  trackName = tracks[0]["name"]
+  return link, trackName
+def topHit():
+  sp = spotipy.Spotify(client_credentials_manager= SpotifyClientCredentials ("5f75bd64fe6742598b2d4650d401e9fe", "bf777b8578dd4f55b25b31f768eec9c2"))
+  topHitPlayList = sp.playlist_tracks("37i9dQZF1DXcBWIGoYBM5M", limit = 50)
+  track_ids = []
+  track_ids.append(topHitPlayList["items"][0]["track"]["id"])
+  second = random.randint(1,49)
+  track_ids.append(topHitPlayList["items"][second]["track"]["id"])
+  third = random.randint(3,49)
+  if (second == third):
+    third = third - 1
+  track_ids.append(topHitPlayList["items"][third]["track"]["id"])
+  trackName = topHitPlayList["items"][0]["track"]['name'] + "," + topHitPlayList["items"][second]["track"]['name']+","+topHitPlayList["items"][third]["track"]['name']
+  return track_ids, trackName
 
 def personalRecom(genres, artists, tracks):
   sp = spotipy.Spotify(client_credentials_manager= SpotifyClientCredentials ("5f75bd64fe6742598b2d4650d401e9fe", "bf777b8578dd4f55b25b31f768eec9c2"))
@@ -28,15 +42,17 @@ def personalRecom(genres, artists, tracks):
   inputA = []
   inputT = []
   try:
-    for i in range(len(listArtists)):
-      searchA = sp.search(q = listArtists[i], limit = 1)
-      inputA.append(searchA["tracks"]["items"][0]["artists"][0]["id"])
+    if artists != "none":
+      for i in range(len(listArtists)):
+        searchA = sp.search(q = listArtists[i], limit = 1)
+        inputA.append(searchA["tracks"]["items"][0]["artists"][0]["id"])
   except:
     return "wrong artist"
   try:
-    for j in range(len(listTracks)):
-      searchA = sp.search(q = listTracks[j], limit = 1)
-      inputT.append(searchA["tracks"]["items"][0]["id"])
+    if tracks != "none":
+      for j in range(len(listTracks)):
+        searchA = sp.search(q = listTracks[j], limit = 1)
+        inputT.append(searchA["tracks"]["items"][0]["id"])
   except:
     return "wrong track"
   none = 0
@@ -52,6 +68,13 @@ def personalRecom(genres, artists, tracks):
   if none ==3 :
     return "none"
 #, seed_genres = inputG
+  # if artists == "none" and tracks != "none":
+  #   recommendations = sp.recommendations(seed_genres = inputG, seed_tracks=inputT, limit = 10)
+  # elif artists != "none" and tracks == "none":
+  #   recommendations = sp.recommendations(seed_artists = inputA,seed_genres = inputG, limit = 10)
+  # elif artists == "none" and tracks == "none":
+  #   recommendations = sp.recommendations(seed_genres = inputG, limit = 10)
+  # else:
   recommendations = sp.recommendations(seed_artists = inputA ,seed_genres = inputG, seed_tracks=inputT, limit = 10)
   print(recommendations)
   #print(recommendations)
@@ -59,6 +82,9 @@ def personalRecom(genres, artists, tracks):
   #print("tt" + str(tracks))
   #link = tracks[0]["album"]['id']
   links = []
+  trackName = ""
   for i in range(9):
     links.append(tracks[i]["album"]['id'])
-  return links
+    trackName += tracks[i]['name']
+    trackName += ","
+  return links, trackName

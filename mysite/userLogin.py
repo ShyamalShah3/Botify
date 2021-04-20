@@ -1,8 +1,10 @@
 import json
+
+guest = False
+
 def checkLogin(userName):
   if (userName == None):
      return False
-  
   return True
 
 def loginResponse(msg, lastResp, userName):
@@ -35,7 +37,10 @@ def askLoginOrCreate(message):
     userInfor = json.load(json_file)
     if message in userInfor and (message != "yes" or message != "no"):
       respose = "It looks like we have recorded <strong>" +message +"'s'</strong> information.\n"
-      respose += "Your favorite genres are "+str(userInfor[message]["genres"]) +".\n"
+      try:
+        respose += "Your favorite genres are "+str(userInfor[message]["genres"][0]) +".\n"
+      except:
+        respose += "You currently have no favorite genres.\n"
       respose += "Is this you?(yes/no)"
       return respose
     elif message == "yes":
@@ -73,56 +78,62 @@ def checkCode(message, userName):
   return response
 
 def addGenres(genres, userName):
-    userInfor = None
-    with open("userInformation") as json_file:
-        userInfor = json.load(json_file) 
-    genreSet = None
-    if (len(userInfor[userName]["genres"])) == 0:
-        genreSet = set()
-    else:
-        genreSet = set(userInfor[userName]["genres"][0].split(","))
-    newGenreSet = set(genres.split(","))
-    genreSet.update(newGenreSet)
-    genreSet = list(genreSet)
-    genreString = ",".join(genreSet)
-    userInfor[userName]["genres"] = [genreString]
-    with open('userInformation', 'w') as outfile:
-         json.dump(userInfor, outfile)
+    if "none" not in genres:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        genreSet = None
+        if (len(userInfor[userName]["genres"])) == 0:
+            genreSet = set()
+        else:
+            genreSet = set(userInfor[userName]["genres"][0].split(","))
+        newGenreSet = set(genres.split(","))
+        genreSet.update(newGenreSet)
+        genreSet = list(genreSet)
+        genreString = ",".join(genreSet)
+        newGenreString = ",".join(newGenreSet)
+        userInfor[userName]["genres"] = [genreString,newGenreString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
     return
 
 def addArtists(artists, userName):
-    userInfor = None
-    with open("userInformation") as json_file:
-        userInfor = json.load(json_file) 
-    artistsSet = None
-    if (len(userInfor[userName]["artists"])) == 0:
-        artistsSet = set()
-    else:
-        artistsSet = set(userInfor[userName]["artists"][0].split(","))
-    newArtistSet = set(artists.split(","))
-    artistsSet.update(newArtistSet)
-    artistsSet = list(artistsSet)
-    artistsString = ",".join(artistsSet)
-    userInfor[userName]["artists"] = [artistsString]
-    with open('userInformation', 'w') as outfile:
-         json.dump(userInfor, outfile)
+    if "none" not in artists:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        artistsSet = None
+        if (len(userInfor[userName]["artists"])) == 0:
+            artistsSet = set()
+        else:
+            artistsSet = set(userInfor[userName]["artists"][0].split(","))
+        newArtistSet = set(artists.split(","))
+        artistsSet.update(newArtistSet)
+        artistsSet = list(artistsSet)
+        artistsString = ",".join(artistsSet)
+        newArtistString = ",".join(newArtistSet)
+        userInfor[userName]["artists"] = [artistsString,newArtistString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
     return
 
 def addTracks(tracks, userName):
-    userInfor = None
-    with open("userInformation") as json_file:
-        userInfor = json.load(json_file) 
-    userInfor[userName]["tracks"].append(tracks)
-    tracksSet = None
-    if (len(userInfor[userName]["tracks"])) == 0:
-        tracksSet = set()
-    else:
-        tracksSet = set(userInfor[userName]["tracks"][0].split(","))
-    newTrackSet = set(tracks.split(","))
-    tracksSet.update(newTrackSet)
-    tracksSet = list(tracksSet)
-    tracksString = ",".join(tracksSet)
-    userInfor[userName]["tracks"] = [tracksString]
-    with open('userInformation', 'w') as outfile:
-        json.dump(userInfor, outfile)
+    if "none" not in tracks:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        userInfor[userName]["tracks"].append(tracks)
+        tracksSet = None
+        if (len(userInfor[userName]["tracks"])) == 0:
+            tracksSet = set()
+        else:
+            tracksSet = set(userInfor[userName]["tracks"][0].split(","))
+        newTrackSet = set(tracks.split(","))
+        tracksSet.update(newTrackSet)
+        tracksSet = list(tracksSet)
+        tracksString = ",".join(tracksSet)
+        newTrackString = ",".join(newTrackSet)
+        userInfor[userName]["tracks"] = [tracksString,newTrackString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
     return

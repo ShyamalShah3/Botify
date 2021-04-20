@@ -43,7 +43,9 @@ def getResponse(request):
     else:
       if "enter your 4-digit code" in response or "to create an account"in response or "4-digit code as your password."in response:
         response = userLogin.loginResponse(message, response, inputUserName)
-      
+      elif message == "guest":
+        userName = message
+        response += "\nHello, you are logged in as a <strong>"+ userName +"</strong>! What can I do for you today?\n1. Recommend Today's Top Hits\n2. Give me a personal Recomendation\n3. Recommend Anything\n4. More about Botify\n"
       else:
         response = userLogin.askLoginOrCreate(message)
         if "Is this you" in response or "Please enter your username to create an account."in response or "Do you want use name " in response:
