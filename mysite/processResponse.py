@@ -71,30 +71,42 @@ def storeInput(msg, response, userName):
   #   f = open("data", "w")
   #   f.write("Tracks: "+ msg)
   #   f.close()
-def processPersonal(response, userName):
+def processPersonal(response, userName, historyOrCurrent):
   embed = ""
   genres = "none"
   artists = "none"
   tracks = "none"
+  trackName = None
   if "Here is what we found for you" in response:
     with open("userInformation") as json_file:
         userInfor = json.load(json_file) 
-    if len(userInfor[userName]['genres']) != 0:
-      genres = userInfor[userName]['genres'][0]
-    if len(userInfor[userName]['artists']) != 0:
-       artists = userInfor[userName]['artists'][0]
-    if len(userInfor[userName]['tracks']) != 0:  
-      tracks = userInfor[userName]['tracks'][0]
+    if "current" in historyOrCurrent:
+      if len(userInfor[userName]['genres']) != 0:
+        genres = userInfor[userName]['genres'][1]
+      if len(userInfor[userName]['artists']) != 0:
+        artists = userInfor[userName]['artists'][1]
+      if len(userInfor[userName]['tracks']) != 0:  
+        tracks = userInfor[userName]['tracks'][1]
+    elif "history" in historyOrCurrent:
+      if len(userInfor[userName]['genres']) != 0:
+        genres = userInfor[userName]['genres'][0]
+      if len(userInfor[userName]['artists']) != 0:
+        artists = userInfor[userName]['artists'][0]
+      if len(userInfor[userName]['tracks']) != 0:  
+        tracks = userInfor[userName]['tracks'][0]
     try:
+       print(genres)
+       print(artists)
+       print(tracks)
        links, trackName = spotifyAPI.personalRecom(genres, artists,tracks)
     except:
-      return "Sorry, we cannot recommend anything to you based on your provided information, \nit may because your preferences suck..."
+      return "Sorry, we cannot recommend anything to you based on your provided information, \nit may because your preferences suck...", trackName
     if "wrong artist" in links:
-       return "It seems that we did not find any results based on the artists you provided."
+       return "It seems that we did not find any results based on the artists you provided.", trackName
     elif "wrong track" in links:
        return "It seems that we did not find any results based on the tracks you provided."
     if "none" in links:
-      return "Please provide some information.&#128532"
+      return "Please provide some information.&#128532", trackName
   
     for link in links:
       embed = embed +"<iframe src= \"https://open.spotify.com/embed/album/"+link +"\" width=\"300\" height=\"80\" frameborder=\"0\" allowtransparency=\"true\" allow=\"encrypted-media\"></iframe>"+"\n"

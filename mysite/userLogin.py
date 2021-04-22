@@ -95,6 +95,21 @@ def addGenres(genres, userName):
         userInfor[userName]["genres"] = [genreString,newGenreString]
         with open('userInformation', 'w') as outfile:
             json.dump(userInfor, outfile)
+    else:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        genreSet = None
+        if (len(userInfor[userName]["genres"])) == 0:
+            genreSet = set()
+        else:
+            genreSet = set(userInfor[userName]["genres"][0].split(","))
+        genreSet = list(genreSet)
+        genreString = ",".join(genreSet)
+        newGenreString = "none"
+        userInfor[userName]["genres"] = [genreString,newGenreString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
     return
 
 def addArtists(artists, userName):
@@ -112,6 +127,22 @@ def addArtists(artists, userName):
         artistsSet = list(artistsSet)
         artistsString = ",".join(artistsSet)
         newArtistString = ",".join(newArtistSet)
+        userInfor[userName]["artists"] = [artistsString,newArtistString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
+    else:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        artistsSet = None
+        if (len(userInfor[userName]["artists"])) == 0:
+            artistsSet = set()
+        else:
+            artistsSet = set(userInfor[userName]["artists"][0].split(","))
+        
+        artistsSet = list(artistsSet)
+        artistsString = ",".join(artistsSet)
+        newArtistString = "none"
         userInfor[userName]["artists"] = [artistsString,newArtistString]
         with open('userInformation', 'w') as outfile:
             json.dump(userInfor, outfile)
@@ -133,6 +164,23 @@ def addTracks(tracks, userName):
         tracksSet = list(tracksSet)
         tracksString = ",".join(tracksSet)
         newTrackString = ",".join(newTrackSet)
+        userInfor[userName]["tracks"] = [tracksString,newTrackString]
+        with open('userInformation', 'w') as outfile:
+            json.dump(userInfor, outfile)
+    else:
+        userInfor = None
+        with open("userInformation") as json_file:
+            userInfor = json.load(json_file) 
+        userInfor[userName]["tracks"].append(tracks)
+        tracksSet = None
+        if (len(userInfor[userName]["tracks"])) == 0:
+            tracksSet = set()
+        else:
+            tracksSet = set(userInfor[userName]["tracks"][0].split(","))
+        
+        tracksSet = list(tracksSet)
+        tracksString = ",".join(tracksSet)
+        newTrackString = "none"
         userInfor[userName]["tracks"] = [tracksString,newTrackString]
         with open('userInformation', 'w') as outfile:
             json.dump(userInfor, outfile)

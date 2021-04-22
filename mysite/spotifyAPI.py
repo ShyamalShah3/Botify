@@ -65,8 +65,9 @@ def personalRecom(genres, artists, tracks):
   if tracks == "none":
     inputT = None
     none +=1
+  print(none)
   if none ==3 :
-    return "none"
+    return "none", None
 #, seed_genres = inputG
   # if artists == "none" and tracks != "none":
   #   recommendations = sp.recommendations(seed_genres = inputG, seed_tracks=inputT, limit = 10)

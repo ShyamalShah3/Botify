@@ -7,6 +7,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from . import processResponse
 from . import userLogin
 global trackName
+global historyOrNot
 def createSession():
   authenticator = IAMAuthenticator('Z5EqkvIKkkuVq6fLrQGu2RBkoeA3bbwtN95RXoSSlHGm')
   assistant = AssistantV2(
@@ -57,7 +58,9 @@ def sendMessage(msg, session, userName):
 
 def responseMsg(msg, response, userName):
     global trackName
+    global historyOrNot
     print("test:" + str(response))
+    
     if len(response['output']['generic']) == 0:#wrong input msg
 
       return "Sorry, I don't understand"
@@ -66,13 +69,15 @@ def responseMsg(msg, response, userName):
       responseString = responseString.replace("\\n", '<br>', 10)
       
       processResponse.storeInput(msg, responseString, userName)
-      responseString = processResponse.processPersonal(responseString, userName)
+      responseString, trackName = processResponse.processPersonal(responseString, userName, historyOrNot)
       return responseString
     else:
       responseString = str(json.dumps(response['output']['generic'][0]['text'], indent=2))
       responseString = responseString.replace("\\n", '<br>', 10)
       print("intent: "+ response['output']['intents'][0]['intent'])
       intent = response['output']['intents'][0]['intent']
+      if intent  == "Complete_history":
+        historyOrNot = msg
       if  intent == 'Anything' or intent == 'Random':
         responseString, trackName = processResponse.processRandom(responseString)
 
